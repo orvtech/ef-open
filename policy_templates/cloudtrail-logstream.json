@@ -1,0 +1,23 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Sid": "sid1",
+    "Effect": "Allow",
+    "Action": [
+      "logs:CreateLogStream"
+    ],
+    "Resource": [
+      "arn:aws:logs:us-west-2:{{ACCOUNT}}:log-group:{{ACCOUNT_ALIAS}}-cloudtrail-loggroup:log-stream:{{ACCOUNT}}_CloudTrail_us-west-2*"
+    ]
+  },
+  {
+    "Sid": "sid2",
+    "Effect": "Allow",
+    "Action": [
+      "logs:PutLogEvents"
+    ],
+    "Resource": [
+      "arn:aws:logs:us-west-2:{{ACCOUNT}}:log-group:{{ACCOUNT_ALIAS}}-cloudtrail-loggroup:log-stream:{{ACCOUNT}}_CloudTrail_us-west-2*"
+    ]
+  }]
+}

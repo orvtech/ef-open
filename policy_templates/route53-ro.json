@@ -1,0 +1,20 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "route53:GetHostedZone",
+        "route53:GetHostedZoneCount",
+        "route53:GetReusableDelegationSet",
+        "route53:ListHostedZones",
+        "route53:ListHostedZonesByName",
+        "route53:ListResourceRecordSets",
+        "route53:ListReusableDelegationSets",
+        "route53:ListTagsForResource",
+        "route53:ListTagsForResources"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

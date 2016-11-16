@@ -1,0 +1,27 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeSecurityGroups"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Resource": [
+        "arn:aws:ec2:{{REGION}}:{{ACCOUNT}}:security-group/{{aws:ec2:security-group/security-group-id,prod-cloudfront-ingress,NONE}}",
+        "arn:aws:ec2:{{REGION}}:{{ACCOUNT}}:security-group/{{aws:ec2:security-group/security-group-id,staging-cloudfront-ingress,NONE}}",
+        "arn:aws:ec2:{{REGION}}:{{ACCOUNT}}:security-group/{{aws:ec2:security-group/security-group-id,proto0-cloudfront-ingress,NONE}}",
+        "arn:aws:ec2:{{REGION}}:{{ACCOUNT}}:security-group/{{aws:ec2:security-group/security-group-id,proto1-cloudfront-ingress,NONE}}",
+        "arn:aws:ec2:{{REGION}}:{{ACCOUNT}}:security-group/{{aws:ec2:security-group/security-group-id,proto2-cloudfront-ingress,NONE}}",
+        "arn:aws:ec2:{{REGION}}:{{ACCOUNT}}:security-group/{{aws:ec2:security-group/security-group-id,proto3-cloudfront-ingress,NONE}}"
+      ]
+    }
+  ]
+}
