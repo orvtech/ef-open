@@ -1,0 +1,177 @@
+{
+  "services": {
+    "r53tool": {
+      "type": "aws_role",
+      "description": "assumable role (only) w/ Route53 read-only; used by ef-r53tool setup delegated subdomains",
+      "runbook_url": "TBD",
+      "team_email": "ops@ellation.com",
+      "environments": ["global.ellationeng"],
+      "assume_role_policy": "assume_role_r53tool",
+      "policies": ["route53-ro"]
+    },
+    "dns-nonprod-public-endpoints": {
+      "type": "aws_fixture",
+      "description": "Some public non-prod environment DNS names are managed separately from the resources they name",
+      "runbook_url": "TBD",
+      "team_email": "ops@ellation.com",
+      "environments": ["staging", "proto"]
+    },
+    "dns-prod-public-endpoints": {
+      "type": "aws_fixture",
+      "description": "All public prod-environment DNS names are managed separately from the resources they name",
+      "runbook_url": "https://ellation.atlassian.net/wiki/display/DEVOPS/Ellation+Public+Endpoints",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod"]
+    },
+    "cloudtrail-logs": {
+      "type": "aws_cloudtrail",
+      "description": "Cloudtrail logs and alarms",
+      "runbook_url": "TBD",
+      "team_email": "ops@ellation.com",
+      "environments": ["global.ellation", "global.ellationeng"],
+      "policies": ["cloudtrail-logstream"]
+    },
+    "cloudwatch": {
+      "type": "aws_fixture",
+      "description": "CloudWatch logs and alarms",
+      "runbook_url": "TBD",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod", "staging"]
+    },
+    "update-cfr-security-groups": {
+      "type": "aws_lambda",
+      "description": "Update Cloudfront security group(s) to allow ingress from CloudFront IP addresses",
+      "runbook_url": "https://ellation.atlassian.net/wiki/display/DEVOPS/Lambda+runbook",
+      "jira_project": "CXOPS",
+      "team_email": "ops@ellation.com",
+      "environments": ["mgmt.ellationeng", "mgmt.ellation"],
+      "policies": ["global_buckets_ro", "instance_introspection", "lambdas_all", "update-cfr-security-groups"]
+    },
+    "policy-allusers": {
+      "type": "aws_fixture",
+      "description": "Create policy for the group AllUsers",
+      "runbook_url": "https://ellation.atlassian.net/wiki/display/DEVOPS/VRV+User+Maintenance",
+      "jira_project": "CXOPS",
+      "team_email": "ops@ellation.com",
+      "environments": ["global.ellation", "global.ellationeng"]
+    },
+    "policy-readawsresources": {
+      "type": "aws_fixture",
+      "description": "Policy for the group ReadOnlyAWS",
+      "runbook_url": "https://ellation.atlassian.net/wiki/display/DEVOPS/VRV+User+Maintenance",
+      "jira_project": "CXOPS",
+      "team_email": "ops@ellation.com",
+      "environments": ["global.ellation", "global.ellationeng"]
+    },
+    "elasticip": {
+      "type": "aws_fixture",
+      "description": "Elastic IPs",
+      "runbook_url": "https://ellation.atlassian.net/wiki/display/DEVOPS/VRV+Network+Runbook",
+      "team_email": "ops@ellation.com",
+      "environments": ["mgmt.ellation", "mgmt.ellationeng"]
+    },
+    "network": {
+      "type": "aws_fixture",
+      "description": "Network config - everything after the vpc: subnets and gateway",
+      "runbook_url": "https://ellation.atlassian.net/wiki/display/DEVOPS/VRV+Network+Runbook",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod", "staging", "proto", "mgmt.ellation", "mgmt.ellationeng"]
+    },
+    "vpc": {
+      "type": "aws_fixture",
+      "description": "Network config - VPC only (with default routetable)",
+      "runbook_url": "TBD",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod", "staging", "proto", "mgmt.ellation", "mgmt.ellationeng"]
+    },
+    "vpn": {
+      "type": "aws_fixture",
+      "description": "Network config - VPN back to office or datacenter for subnets",
+      "runbook_url": "TBD",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod", "staging", "proto", "mgmt.ellation", "mgmt.ellationeng"]
+    },
+    "s3-configs": {
+      "type": "aws_fixture",
+      "description": "S3 configuration bucket",
+      "runbook_url": "TBD",
+      "team_email": "ops@ellation.com",
+      "environments": ["global.ellation"]
+    },
+    "s3-credentials": {
+      "type": "aws_fixture",
+      "description": "S3 credentials buckets",
+      "runbook_url": "TBD",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod", "staging", "proto", "mgmt.ellation", "mgmt.ellationeng"]
+    },
+    "s3-dist": {
+      "type": "aws_fixture",
+      "description": "S3 code distribution bucket",
+      "runbook_url": "TBD",
+      "team_email": "ops@ellation.com",
+      "environments": ["global.ellation"]
+    },
+    "s3-logs": {
+      "type": "aws_fixture",
+      "description": "S3 log bucket",
+      "runbook_url": "TBD",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod", "staging", "proto", "global.ellation", "global.ellationeng", "mgmt.ellation", "mgmt.ellationeng"]
+    },
+    "s3-static": {
+      "type": "aws_fixture",
+      "description": "S3 static buckets",
+      "runbook_url": "TBD",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod", "staging", "proto"]
+    },
+    "sg": {
+      "type": "aws_fixture",
+      "description": "shared ingress/egress security groups (such as from office IPs and VPN)",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod", "staging", "proto", "mgmt.ellation", "mgmt.ellationeng"]
+    },
+    "sns-topics": {
+      "type": "aws_fixture",
+      "description": "SNS topics",
+      "runbook_url": "TBD",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod", "staging", "global.ellation", "global.ellationeng"]
+    },
+    "waf-rules": {
+      "type": "aws_fixture",
+      "description": "shared WAF rules (such as from office IPs and VPN)",
+      "team_email": "ops@ellation.com",
+      "environments": ["global.ellation", "global.ellationeng"]
+    },
+    "test-instance": {
+      "type": "aws_ec2",
+      "description": "test ec2 instance",
+      "runbook_url": "TBD",
+      "jira_project": "CXOPS",
+      "chef_role": "base",
+      "team_email": "ops@ellation.com",
+      "environments": ["staging", "proto", "mgmt.ellationeng"],
+      "policies": ["global_buckets_ro", "instance_introspection"]
+    },
+    "hosted-zones": {
+      "type": "aws_fixture",
+      "description": "all registered domains for production services",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod", "staging", "proto", "mgmt.ellation", "mgmt.ellationeng"]
+    },
+    "cloudfront-ingress": {
+      "type": "aws_security_group",
+      "description": "Security group only: CloudFront IPs for ingress to service ELBs",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod", "staging", "proto"]
+    },
+    "office-cidr-ingress": {
+      "type": "aws_security_group",
+      "description": "Security group only: office IP CIDRs for allowing office ingress to resources",
+      "team_email": "ops@ellation.com",
+      "environments": ["prod", "staging", "proto", "mgmt.ellation", "mgmt.ellationeng"]
+    }
+  }
+}
