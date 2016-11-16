@@ -1,0 +1,23 @@
+{
+  "dest": {
+    "path": "/home/centos/.ssh/authorized_keys",
+    "dir_perm": "755",
+    "file_perm": "600",
+    "user_group": "centos:centos",
+    "environments": ["global", "mgmt", "prod", "proto", "staging"]
+  },
+  "params": {
+    "default": {
+      "keys": [
+        "ssh-rsa XXXXX admin@example.com",
+        "ssh-rsa XXXXX anotheradmin@example.com"
+      ]
+    },
+    "proto": {
+      "keys": [
+        "ssh-rsa XXXXX developer@example.com",
+        "ssh-rsa XXXXX anotherdeveloper@example.com"
+      ]
+    }
+  }
+}
