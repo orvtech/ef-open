@@ -1,0 +1,22 @@
+[
+  {
+    "ParameterKey": "BgpAsnParam",
+    "ParameterValue": "65002"
+  },
+  {
+    "ParameterKey": "CustomerGatewayAddress0Param",
+    "ParameterValue": "207.173.20.37"
+  },
+  {
+    "ParameterKey": "CustomerGatewayAddress1Param",
+    "ParameterValue": "65.49.43.252"
+  },
+  {
+    "ParameterKey": "DestinationCidrVpnConnection0Param",
+    "ParameterValue": "10.30.0.0/16"
+  },
+  {
+    "ParameterKey": "DestinationCidrVpnConnection1Param",
+    "ParameterValue": "10.0.0.0/14"
+  }
+]

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+fail() {
+  echo "$1"
+  exit 1
+}
+
+usage() {
+  echo "Surveys all WAFs in an account and displays their default setting (BLOCK or ALLOW)"
+  echo "Usage: $(basename $0) <account_alias>"
+}
+
+[ -n "$1" ] || fail "$(usage)"
+ACCOUNT_ALIAS="$1"
+
+ACLLIST=$(aws waf list-web-acls --limit 100 --profile ${ACCOUNT_ALIAS} --output text | tail -n +2 | sort |
+cut -f 2- | tr -s '\t' '_')
+echo "WAF default BLOCK or ALLOW settings for account alias: ${ACCOUNT_ALIAS}"
+date
+for env_and_acl in ${ACLLIST}; do
+  wafname=$(cut -f 1 -d _ <<< "${env_and_acl}")
+  acl=$(cut -f 2 -d _ <<< "${env_and_acl}")
+  default=$(aws waf get-web-acl --web-acl-id ${acl} --profile ${ACCOUNT_ALIAS} --output text | grep DEFAULTACTION | cut -f 2)
+  echo "${wafname} ${default} ${acl}"
+done

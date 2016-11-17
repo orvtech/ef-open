@@ -1,0 +1,131 @@
+#!/usr/bin/env python
+
+"""
+Provides config-file-driven Route53 configuration functionality that is either not available or awkward to attain
+through Cloudformation.
+
+
+Copyright 2016 Ellation, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+
+from __future__ import print_function
+import argparse
+import json
+from os import getenv
+from os.path import dirname, isfile, normpath
+import sys
+
+import boto3
+import botocore.exceptions
+
+from ef_aws_resolver import EFAwsResolver
+from ef_config import EFConfig
+from ef_context import EFContext
+from ef_template_resolver import EFTemplateResolver
+from ef_utils import create_aws_clients, fail, pull_repo
+
+# Globals
+CLIENTS = None
+CONTEXT = None
+AWS_RESOLVER = None
+
+def handle_args_and_set_context(args):
+  """
+  Args:
+    args: the command line args, probably passed from main() as sys.argv[1:]
+  Returns:
+    a populated EFContext object
+  """
+  parser = argparse.ArgumentParser()
+  parser.add_argument("r53_config_file", help="/path/to/r53_config.json", default=None)
+  parser.add_argument("--commit", help="Make changes in AWS (dry run if omitted)", action="store_true", default=False)
+  parser.add_argument("--verbose", help="Print additional info", action="store_true", default=False)
+  parser.add_argument("--devel", help="Allow running from branch; don't refresh from origin", action="store_true",
+                      default=False)
+  parsed_args = vars(parser.parse_args(args))
+  context = EFContext()
+  context.r53_config_file = parsed_args["r53_config_file"]
+  context.commit = parsed_args["commit"]
+  context.devel = parsed_args["devel"]
+  context.verbose = parsed_args["verbose"]
+  return context
+
+def print_if_verbose(message):
+  if CONTEXT.verbose:
+    print(message, file=sys.stderr)
+
+def load_config():
+  if not isfile(CONTEXT.r53_config_file):
+    raise IOError("Not a file: {}".format(CONTEXT.r53_config_file))
+
+  try:
+    config_file_fh = open(CONTEXT.r53_config_file, "r")
+  except IOError as e:
+    fail("Error opening config file: {} {}".format(CONTEXT.r53_config_file, e.message))
+  config = json.load(config_file_fh)
+  config_file_fh.close()
+  return config
+
+
+
+def main():
+  global CONTEXT, CLIENTS, AWS_RESOLVER
+
+  CONTEXT = handle_args_and_set_context(sys.argv[1:])
+  if not (CONTEXT.devel or getenv("JENKINS_URL", False)):
+    try:
+      pull_repo()
+    except RuntimeError as error:
+      fail("Error checking or pulling repo", error)
+  else:
+    print("Not refreshing repo because --devel was set or running on Jenkins")
+
+  r53_config = load_config()
+
+  # sign on to AWS and create clients
+  try:
+    # If running in EC2, always use instance credentials. One day we'll have "lambda" in there too, so use "in" w/ list
+    if CONTEXT.whereami in ["ec2"]:
+      CLIENTS = create_aws_clients(EFConfig.DEFAULT_REGION, None, "route53")
+    else:
+      # Otherwise, we use local user creds based on the account alias
+      CLIENTS = create_aws_clients(EFConfig.DEFAULT_REGION, CONTEXT.account_alias, "route53")
+  except RuntimeError:
+    fail("Exception creating AWS clients in region {} with profile {}".format(
+      EFConfig.DEFAULT_REGION, CONTEXT.account_alias))
+  # Instantiate and AWSResolver to lookup AWS resources
+  AWS_RESOLVER = EFAwsResolver(CLIENTS)
+
+  # Show where we're working
+  if not CONTEXT.commit:
+    print("=== DRY RUN ===\nUse --commit to create roles and security groups\n=== DRY RUN ===")
+  print("account: {}".format(CLIENTS["SESSION"].resource('iam').CurrentUser().arn.split(':')[4]))
+  print("env: {}".format(CONTEXT.env))
+  print("env_full (expected in Service Registry): {}".format(CONTEXT.env_full))
+  print("profile: {}".format(CONTEXT.account_alias))
+
+
+  # Step through all objects in the config file
+  for config_item in r53_config:
+    print(config_item)
+
+
+
+
+
+  print("Exit: success")
+
+if __name__ == "__main__":
+  main()

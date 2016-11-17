@@ -1,0 +1,55 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "{{ACCOUNT}}-{{ENV}}-{{SERVICE}}",
+  "Parameters": {
+    "PagerDutyEndPointParam": {
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Conditions": {
+    "EnvIsGlobal": { "Fn::Equals": [ "{{ENV}}", "global" ] },
+    "EnvIsNotGlobal": { "Fn::Not": [ { "Fn::Equals": [ "{{ENV}}", "global" ] } ] }
+  },
+  "Resources": {
+    "CloudTrailAlarmNotificationTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Condition": "EnvIsGlobal",
+      "Properties": {
+        "Subscription": [{
+          "Endpoint": "ops@ellation.com",
+          "Protocol": "email"
+        }],
+        "TopicName": "{{ACCOUNT_ALIAS}}-cloudtrail-alarms"
+      }
+    },
+    "WarningAlarmNotificationTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Condition": "EnvIsNotGlobal",
+      "Properties": {
+        "Subscription": [{
+          "Endpoint": "ops@ellation.com",
+          "Protocol": "email"
+        }],
+        "TopicName": "{{ACCOUNT_ALIAS}}-{{REGION}}-{{ENV}}-warning"
+      }
+    },
+    "CriticalAlarmNotificationTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Condition": "EnvIsNotGlobal",
+      "Properties": {
+        "Subscription": [
+          {
+            "Endpoint": "ops@ellation.com",
+            "Protocol": "email"
+          },
+          {
+            "Endpoint": { "Ref": "PagerDutyEndPointParam" },
+            "Protocol": "https"
+          }
+        ],
+        "TopicName": "{{ACCOUNT_ALIAS}}-{{REGION}}-{{ENV}}-critical"
+      }
+    }
+  }
+}

@@ -1,0 +1,375 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "{{ENV}}-policy-allusers",
+  "Parameters": {
+   "OfficeCidrWifiParam": {
+     "Type": "String",
+     "Default": "40.129.186.109/32"
+   },
+   "OfficeCidrVpnParam": {
+     "Type": "String",
+     "Default": "207.173.20.38/32"
+   },
+   "OfficeCidrVpnInternalParam": {
+     "Type": "String",
+     "Default": "10.30.0.0/16"
+   },
+   "OfficeCidrWiredParam": {
+     "Type": "String",
+     "Default": "207.173.20.37/32"
+   }
+ },
+  "Resources": {
+    "UsersManageCredentials": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "UsersManageCredentials",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "sid1",
+            "Effect": "Allow",
+            "Action": [
+              "iam:*AccessKey*",
+              "iam:*LoginProfile",
+              "iam:*SSHPublicKey*",
+              "iam:CreateAccessKey",
+              "iam:ListAttachedUserPolicies"
+            ],
+            "Resource": "arn:aws:iam::{{ACCOUNT}}:user/${aws:username}"
+          }, {
+            "Sid": "sid2",
+            "Effect": "Allow",
+            "Action": [
+              "iam:GetAccountPasswordPolicy",
+              "iam:GetAccountSummary",
+              "iam:ListAccount*",
+              "iam:ListUsers"
+            ],
+            "Resource": "*"
+          }, {
+            "Sid": "sid3",
+            "Effect": "Allow",
+            "Action": [
+              "iam:CreateVirtualMFADevice",
+              "iam:EnableMFADevice",
+              "iam:ResyncMFADevice"
+            ],
+            "Resource": [
+              "arn:aws:iam::{{ACCOUNT}}:mfa/${aws:username}",
+              "arn:aws:iam::{{ACCOUNT}}:user/${aws:username}"
+            ]
+          }, {
+            "Sid": "sid4",
+            "Effect": "Allow",
+            "Action": [
+              "iam:ListMFADevices",
+              "iam:ListVirtualMFADevices"
+            ],
+            "Resource": "*"
+          }]
+        },
+      "Groups": [ "AllUsers" ]
+      }
+    },
+    "ListAllMyBuckets": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ListAllMyBuckets",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "sid5",
+            "Effect": "Allow",
+            "Action": "s3:ListAllMyBuckets",
+            "Resource": "arn:aws:s3:::*"
+          }, {
+            "Sid": "sid6",
+            "Effect": "Allow",
+            "Action": [ "s3:ListBucket" ],
+            "Resource": [
+              "arn:aws:s3:::ellation-cx-*-cms-imagestore",
+              "arn:aws:s3:::ellation-cx-*-cms-imagestore/*",
+              "arn:aws:s3:::ellation-cx-*-static",
+              "arn:aws:s3:::ellation-cx-*-static/*",
+              "arn:aws:s3:::ellation-cx-*-vod-ingest",
+              "arn:aws:s3:::ellation-cx-*-vod-ingest/*",
+              "arn:aws:s3:::ellation-cx-*-vod-media",
+              "arn:aws:s3:::ellation-cx-*-vod-media/*"
+            ],
+            "Condition": {
+              "IpAddress": {
+                "aws:SourceIp": [
+                  { "Ref": "OfficeCidrVpnInternalParam" },
+                  { "Ref": "OfficeCidrVpnParam" },
+                  { "Ref": "OfficeCidrWifiParam" },
+                  { "Ref": "OfficeCidrWiredParam" }
+                ]
+              }
+            }
+          }]
+        },
+        "Groups": [ "AllUsers" ]
+      }
+    },
+    "ReadOnlyEC2": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ReadOnlyEC2",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "sid7",
+            "Effect": "Allow",
+            "Action": [
+              "autoscaling:Describe*",
+              "ec2:Describe*",
+              "ec2:MonitorInstances",
+              "iam:ListServerCertificates"
+            ],
+            "Resource": "*",
+            "Condition": {
+              "IpAddress": {
+                "aws:SourceIp": [
+                  { "Ref": "OfficeCidrVpnInternalParam" },
+                  { "Ref": "OfficeCidrVpnParam" },
+                  { "Ref": "OfficeCidrWifiParam" },
+                  { "Ref": "OfficeCidrWiredParam" }
+                ]
+              }
+            }
+          }]
+        },
+        "Groups": [ "AllUsers" ]
+      }
+    },
+    "ReadOnlyRDS": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ReadOnlyRDS",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "sid8",
+            "Effect": "Allow",
+            "Action": [
+              "rds:DescribeDBClusters",
+              "rds:DescribeDBInstances",
+              "rds:DescribeDBSecurityGroups",
+              "rds:ListTagsForResource"
+            ],
+            "Resource": "*",
+            "Condition": {
+              "IpAddress": {
+                "aws:SourceIp": [
+                  { "Ref": "OfficeCidrVpnInternalParam" },
+                  { "Ref": "OfficeCidrVpnParam" },
+                  { "Ref": "OfficeCidrWifiParam" },
+                  { "Ref": "OfficeCidrWiredParam" }
+                ]
+              }
+            }
+          }]
+        },
+        "Groups": [ "AllUsers" ]
+      }
+    },
+    "ReadOnlyRoute53": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ReadOnlyRoute53",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "sid9",
+            "Effect": "Allow",
+            "Action": [
+              "acm:ListCertificates",
+              "route53:Get*",
+              "route53:List*",
+              "route53domains:Get*",
+              "route53domains:List*"
+            ],
+            "Resource": "*",
+            "Condition": {
+              "IpAddress": {
+                "aws:SourceIp": [
+                  { "Ref": "OfficeCidrVpnInternalParam" },
+                  { "Ref": "OfficeCidrVpnParam" },
+                  { "Ref": "OfficeCidrWifiParam" },
+                  { "Ref": "OfficeCidrWiredParam" }
+                ]
+              }
+            }
+          }]
+        },
+        "Groups": [ "AllUsers" ]
+      }
+    },
+    "ReadOnlySES": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ReadOnlySES",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "sid10",
+            "Effect": "Allow",
+            "Action": [
+              "ses:GetSendQuota",
+              "ses:GetSendStatistics",
+              "ses:ListIdentities",
+              "ses:ListVerifiedEmailAddresses"
+            ],
+            "Resource": "*",
+            "Condition": {
+              "IpAddress": {
+                "aws:SourceIp": [
+                  { "Ref": "OfficeCidrVpnInternalParam" },
+                  { "Ref": "OfficeCidrVpnParam" },
+                  { "Ref": "OfficeCidrWifiParam" },
+                  { "Ref": "OfficeCidrWiredParam" }
+                ]
+              }
+            }
+          }]
+        },
+        "Groups": [ "AllUsers" ]
+      }
+    },
+    "ReadOnlyWAF": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ReadOnlyWAF",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "sid11",
+            "Effect": "Allow",
+            "Action": [
+              "waf:GetWebACL",
+              "waf:ListWebACLs",
+              "waf:ListRules"
+            ],
+            "Resource": "*",
+            "Condition": {
+              "IpAddress": {
+                "aws:SourceIp": [
+                  { "Ref": "OfficeCidrVpnInternalParam" },
+                  { "Ref": "OfficeCidrVpnParam" },
+                  { "Ref": "OfficeCidrWifiParam" },
+                  { "Ref": "OfficeCidrWiredParam" }
+                ]
+              }
+            }
+          }]
+        },
+        "Groups": [ "AllUsers" ]
+      }
+    },
+    "ReadOnlyCloudWatch": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ReadOnlyCloudWatch",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "sid12",
+            "Effect": "Allow",
+            "Action": [
+              "cloudwatch:Describe*",
+              "cloudwatch:Get*",
+              "cloudwatch:List*",
+              "events:Describe*",
+              "events:List*",
+              "events:TestEventPattern",
+              "logs:Describe*",
+              "logs:FilterLogEvents",
+              "logs:GetLogEvents",
+              "logs:TestMetricFilter"
+            ],
+            "Resource": "*",
+            "Condition": {
+              "IpAddress": {
+                "aws:SourceIp": [
+                  { "Ref": "OfficeCidrVpnInternalParam" },
+                  { "Ref": "OfficeCidrVpnParam" },
+                  { "Ref": "OfficeCidrWifiParam" },
+                  { "Ref": "OfficeCidrWiredParam" }
+                ]
+              }
+            }
+          }]
+        },
+        "Groups": [ "AllUsers" ]
+      }
+    },
+    "ReadOnlyCloudFront": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ReadOnlyCloudFront",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "sid13",
+            "Effect": "Allow",
+            "Action": [
+              "cloudfront:Get*",
+              "cloudfront:List*"
+            ],
+            "Resource": "*",
+            "Condition": {
+              "IpAddress": {
+                "aws:SourceIp": [
+                  { "Ref": "OfficeCidrVpnInternalParam" },
+                  { "Ref": "OfficeCidrVpnParam" },
+                  { "Ref": "OfficeCidrWifiParam" },
+                  { "Ref": "OfficeCidrWiredParam" }
+                ]
+              }
+            }
+          }]
+        },
+        "Groups": [ "AllUsers" ]
+      }
+    },
+    "ReadOnlySNS": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ReadOnlySNS",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "sid14",
+            "Effect": "Allow",
+            "Action": [
+              "sns:GetEndpointAttributes",
+              "sns:GetPlatformApplicationAttributes",
+              "sns:GetSMSAttributes",
+              "sns:GetSubscriptionAttributes",
+              "sns:GetTopicAttributes",
+              "sns:ListEndpointsByPlatformApplication",
+              "sns:ListPhoneNumbersOptedOut",
+              "sns:ListPlatformApplications",
+              "sns:ListSubscriptions",
+              "sns:ListSubscriptionsByTopic",
+              "sns:ListTopics"
+            ],
+            "Resource": "*",
+            "Condition": {
+              "IpAddress": {
+                "aws:SourceIp": [
+                  { "Ref": "OfficeCidrVpnInternalParam" },
+                  { "Ref": "OfficeCidrVpnParam" },
+                  { "Ref": "OfficeCidrWifiParam" },
+                  { "Ref": "OfficeCidrWiredParam" }
+                ]
+              }
+            }
+          }]
+        },
+        "Groups": [ "AllUsers" ]
+      }
+    }
+  }
+}

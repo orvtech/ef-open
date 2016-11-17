@@ -1,0 +1,40 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Lambda to update CF-ingress security groups in the current account",
+  "Resources": {
+    "Lambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Description": "Update CF-ingress security groups in the current account",
+        "FunctionName": "update-cfr-security-groups",
+        "Handler": "update-cfr-security-groups.lambda_handler",
+        "MemorySize": 128,
+        "Role": "arn:aws:iam::{{ACCOUNT}}:role/mgmt-update-cfr-security-groups",
+        "Runtime": "python2.7",
+        "Timeout": 15,
+        "Code": {
+          "S3Bucket": "ellation-cx-global-dist",
+          "S3Key": "lambdas/update-cfr-security-groups.py.zip"
+        }
+      }
+    },
+    "LambdaVersion": {
+      "Type": "AWS::Lambda::Version",
+      "DependsOn": "Lambda",
+      "Properties": {
+        "FunctionName": "arn:aws:lambda:{{REGION}}:{{ACCOUNT}}:function:update-cfr-security-groups"
+      }
+    },
+    "AmazonIPSpaceChangedEventPermission": {
+      "Type" : "AWS::Lambda::Permission",
+      "DependsOn": "Lambda",
+      "Properties" : {
+        "Action": "lambda:invokeFunction",
+        "FunctionName": "arn:aws:lambda:{{REGION}}:{{ACCOUNT}}:function:update-cfr-security-groups",
+        "Principal": "s3.amazonaws.com",
+        "SourceAccount": "{{ACCOUNT}}",
+        "SourceArn": "arn:aws:sns:us-east-1:806199016981:AmazonIpSpaceChanged"
+      }
+    }
+  }
+}

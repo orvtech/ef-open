@@ -1,0 +1,18 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "{{ENV}}-{{SERVICE}}",
+  "Conditions": {
+    "EnvIsMgmt": {
+      "Fn::Equals": [ "{{ENV}}", "mgmt" ]
+    }
+  },
+  "Resources": {
+    "ElasticIpMgmtJenkins1": {
+      "Type": "AWS::EC2::EIP",
+      "Condition": "EnvIsMgmt",
+      "Properties": {
+        "Domain": "vpc"
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "{{ENV}}-test-instance",
+  "Resources": {
+    "TestInstance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "IamInstanceProfile": "{{ENV}}-test-instance",
+        "InstanceType": "t2.medium",
+        "ImageId": "{{version:ami-id,test-instance}}",
+        "NetworkInterfaces": [{
+          "AssociatePublicIpAddress": "true",
+          "DeviceIndex": "0",
+          "SubnetId": "{{aws:ec2:subnet/subnet-id,subnet-{{ENV}}-a}}",
+          "GroupSet": [
+            "{{aws:ec2:security-group/security-group-id,{{ENV}}-office-cidr-ingress}}",
+            "{{aws:ec2:security-group/security-group-id,{{ENV}}-test-instance-ec2}}"
+          ]
+        }],
+        "Tags": [{
+          "Key": "Name",
+          "Value": "{{ENV}}-test-instance"
+        }]
+      }
+    }
+  }
+}

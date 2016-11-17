@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+# aws-requestcerts - request certificates from Amazon Certificate Manager via the AWS api
+# https://aws.amazon.com/certificate-manager/
+#
+# Exits with status 0 on a successful run of the command to generate the certificate, and 1 otherwise
+#
+# Note: We clean the values used for the idempotency token to ensure the token is alphumeric
+# characters separated by underscores.
+
+usage() {
+  echo "usage: $0 [--help] --profile PROFILE --region REGION --domain DOMAIN [--alt-names ALTNAMES] [--commit]"
+  echo "  Required:"
+  echo "   --domain DOMAIN   base domain to issue the certificate for, such as 'example.com'"
+  echo "   --profile PROFILE   aws account profile, in ~/.aws/credentials"
+  echo "   --region REGION   aws region where certificate will be created"
+  echo ""
+  echo "  Optional:"
+  echo "   --alt-names 'ALTNAME1 ALTNAME2'   optional list of alternative names"
+  echo "   --commit   Make changes in AWS (echo to command line if omitted)"
+  echo "   --help   Get this usage"
+  exit 1
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --domain   ) shift
+                  DOMAIN=$1
+                  ;;
+    --profile   ) shift
+                  PROFILE=$1
+                  ;;
+    --region    ) shift
+                  REGION=$1
+                  ;;
+    --alt-names ) shift
+                  ALTNAMES=$1
+                  ;;
+    --commit    ) shift
+                  COMMIT=true
+                  ;;
+    --help      )
+                  usage
+                  ;;
+    *           )
+                  usage
+  esac
+  shift
+done
+
+requestCert() {
+  # Call AWS cli to request ACM Cert
+
+  # Set Idempotency Token
+  DOMAINCLEAN=${DOMAIN//[-._]/}
+  REGIONCLEAN=${REGION//[-._]/}
+  TOKEN="${REGIONCLEAN}_${DOMAINCLEAN}"
+
+  if [ -n "${REGION}" ] && [ -n "${DOMAIN}" ] && [ -n "${PROFILE}" ]; then
+    AWSCOMMAND='aws acm request-certificate'
+    AWSREGION="--region ${REGION}"
+    AWSPROFILE="--profile ${PROFILE}"
+    AWSDOMAIN="--domain-name ${DOMAIN}"
+    AWSALTNAME="--subject-alternative-names *.${DOMAIN} ${ALTNAMES}"
+    AWSTOKEN="--idempotency-token ${TOKEN}"
+    if [ "${COMMIT}" == true ]; then
+      echo "Requesting ${DOMAIN} in ${REGION} as profile ${PROFILE}"
+      ${AWSCOMMAND} ${AWSREGION} ${AWSPROFILE} ${AWSDOMAIN} ${AWSALTNAME} ${AWSTOKEN}
+    else
+      echo "Dry run of request for ${DOMAIN} in ${REGION} as profile ${PROFILE}"
+      echo "${AWSCOMMAND} ${AWSREGION} ${AWSPROFILE} ${AWSDOMAIN} ${AWSALTNAME} ${AWSTOKEN}"
+      exit 1
+    fi
+  else
+    echo "Missing required parameters, check usage [--help]"
+    exit 1
+  fi
+}
+
+requestCert

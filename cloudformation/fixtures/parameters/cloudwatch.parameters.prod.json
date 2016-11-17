@@ -1,0 +1,202 @@
+[
+  {
+    "ParameterKey": "BackendConnectionErrorsComparisonOperatorWarningParam",
+    "ParameterValue": "GreaterThanThreshold"
+  },
+  {
+    "ParameterKey": "BackendConnectionErrorsEvaluationPeriodsWarningParam",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "BackendConnectionErrorsPeriodWarningParam",
+    "ParameterValue": "60"
+  },
+  {
+    "ParameterKey": "BackendConnectionErrorsStatisticWarningParam",
+    "ParameterValue": "Sum"
+  },
+  {
+    "ParameterKey": "BackendConnectionErrorsThresholdWarningParam",
+    "ParameterValue": "10"
+  },
+  {
+    "ParameterKey": "BackendConnectionErrorsComparisonOperatorCriticalParam",
+    "ParameterValue": "GreaterThanThreshold"
+  },
+  {
+    "ParameterKey": "BackendConnectionErrorsEvaluationPeriodsCriticalParam",
+    "ParameterValue": "3"
+  },
+  {
+    "ParameterKey": "BackendConnectionErrorsPeriodCriticalParam",
+    "ParameterValue": "60"
+  },
+  {
+    "ParameterKey": "BackendConnectionErrorsStatisticCriticalParam",
+    "ParameterValue": "Sum"
+  },
+  {
+    "ParameterKey": "BackendConnectionErrorsThresholdCriticalParam",
+    "ParameterValue": "300"
+  },
+  {
+    "ParameterKey": "UnHealthyHostCountComparisonOperatorWarningParam",
+    "ParameterValue": "GreaterThanThreshold"
+  },
+  {
+    "ParameterKey": "UnHealthyHostCountEvaluationPeriodsWarningParam",
+    "ParameterValue": "3"
+  },
+  {
+    "ParameterKey": "UnHealthyHostCountPeriodWarningParam",
+    "ParameterValue": "60"
+  },
+  {
+    "ParameterKey": "UnHealthyHostCountStatisticWarningParam",
+    "ParameterValue": "Average"
+  },
+  {
+    "ParameterKey": "UnHealthyHostCountThresholdWarningParam",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "UnHealthyHostCountComparisonOperatorCriticalParam",
+    "ParameterValue": "GreaterThanThreshold"
+  },
+  {
+    "ParameterKey": "UnHealthyHostCountEvaluationPeriodsCriticalParam",
+    "ParameterValue": "5"
+  },
+  {
+    "ParameterKey": "UnHealthyHostCountPeriodCriticalParam",
+    "ParameterValue": "60"
+  },
+  {
+    "ParameterKey": "UnHealthyHostCountStatisticCriticalParam",
+    "ParameterValue": "Average"
+  },
+  {
+    "ParameterKey": "UnHealthyHostCountThresholdCriticalParam",
+    "ParameterValue": "2"
+  },
+  {
+    "ParameterKey": "HTTPCodeBackend5XXComparisonOperatorWarningParam",
+    "ParameterValue": "GreaterThanThreshold"
+  },
+  {
+    "ParameterKey": "HTTPCodeBackend5XXEvaluationPeriodsWarningParam",
+    "ParameterValue": "2"
+  },
+  {
+    "ParameterKey": "HTTPCodeBackend5XXPeriodWarningParam",
+    "ParameterValue": "60"
+  },
+  {
+    "ParameterKey": "HTTPCodeBackend5XXStatisticWarningParam",
+    "ParameterValue": "Sum"
+  },
+  {
+    "ParameterKey": "HTTPCodeBackend5XXThresholdWarningParam",
+    "ParameterValue": "60"
+  },
+  {
+    "ParameterKey": "HTTPCodeBackend5XXComparisonOperatorCriticalParam",
+    "ParameterValue": "GreaterThanThreshold"
+  },
+  {
+    "ParameterKey": "HTTPCodeBackend5XXEvaluationPeriodsCriticalParam",
+    "ParameterValue": "5"
+  },
+  {
+    "ParameterKey": "HTTPCodeBackend5XXPeriodCriticalParam",
+    "ParameterValue": "60"
+  },
+  {
+    "ParameterKey": "HTTPCodeBackend5XXStatisticCriticalParam",
+    "ParameterValue": "Sum"
+  },
+  {
+    "ParameterKey": "HTTPCodeBackend5XXThresholdCriticalParam",
+    "ParameterValue": "150"
+  },
+  {
+    "ParameterKey": "LatencyComparisonOperatorWarningParam",
+    "ParameterValue": "GreaterThanThreshold"
+  },
+  {
+    "ParameterKey": "LatencyEvaluationPeriodsWarningParam",
+    "ParameterValue": "3"
+  },
+  {
+    "ParameterKey": "LatencyPeriodWarningParam",
+    "ParameterValue": "60"
+  },
+  {
+    "ParameterKey": "LatencyStatisticWarningParam",
+    "ParameterValue": "Average"
+  },
+  {
+    "ParameterKey": "LatencyThresholdWarningParam",
+    "ParameterValue": "3"
+  },
+  {
+    "ParameterKey": "LatencyComparisonOperatorCriticalParam",
+    "ParameterValue": "GreaterThanThreshold"
+  },
+  {
+    "ParameterKey": "LatencyEvaluationPeriodsCriticalParam",
+    "ParameterValue": "5"
+  },
+  {
+    "ParameterKey": "LatencyPeriodCriticalParam",
+    "ParameterValue": "60"
+  },
+  {
+    "ParameterKey": "LatencyStatisticCriticalParam",
+    "ParameterValue": "Average"
+  },
+  {
+    "ParameterKey": "LatencyThresholdCriticalParam",
+    "ParameterValue": "6"
+  },
+  {
+    "ParameterKey": "SurgeQueueLengthComparisonOperatorWarningParam",
+    "ParameterValue": "GreaterThanThreshold"
+  },
+  {
+    "ParameterKey": "SurgeQueueLengthEvaluationPeriodsWarningParam",
+    "ParameterValue": "3"
+  },
+  {
+    "ParameterKey": "SurgeQueueLengthPeriodWarningParam",
+    "ParameterValue": "60"
+  },
+  {
+    "ParameterKey": "SurgeQueueLengthStatisticWarningParam",
+    "ParameterValue": "Max"
+  },
+  {
+    "ParameterKey": "SurgeQueueLengthThresholdWarningParam",
+    "ParameterValue": "512"
+  },
+  {
+    "ParameterKey": "SurgeQueueLengthComparisonOperatorCriticalParam",
+    "ParameterValue": "GreaterThanThreshold"
+  },
+  {
+    "ParameterKey": "SurgeQueueLengthEvaluationPeriodsCriticalParam",
+    "ParameterValue": "5"
+  },
+  {
+    "ParameterKey": "SurgeQueueLengthPeriodCriticalParam",
+    "ParameterValue": "60"
+  },
+  {
+    "ParameterKey": "SurgeQueueLengthStatisticCriticalParam",
+    "ParameterValue": "Max"
+  },
+  {
+    "ParameterKey": "SurgeQueueLengthThresholdCriticalParam",
+    "ParameterValue": "1000"
+  }
+]

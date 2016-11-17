@@ -1,0 +1,101 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "{{ENV}}-{{SERVICE}}",
+  "Parameters": {
+    "BgpAsnParam": {
+      "Type": "Number"
+    },
+    "CustomerGatewayAddress0Param": {
+      "Type": "String"
+    },
+    "CustomerGatewayAddress1Param": {
+      "Type": "String",
+      "Default": ""
+    },
+    "DestinationCidrVpnConnection0Param": {
+      "Type": "String"
+    },
+    "DestinationCidrVpnConnection1Param": {
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Resources": {
+    "vpnGateway": {
+      "Type": "AWS::EC2::VPNGateway",
+      "Properties": {
+        "Type": "ipsec.1",
+        "Tags": [ { "Key": "Name", "Value": "vpnGateway-{{ENV}}" } ]
+      }
+    },
+    "vpnCustomerGateway0": {
+      "Type": "AWS::EC2::CustomerGateway",
+      "Properties": {
+        "BgpAsn": { "Ref": "BgpAsnParam" },
+        "IpAddress": { "Ref": "CustomerGatewayAddress0Param" },
+        "Tags": [ { "Key": "Name", "Value": "vpnCustomerGateway0-{{ENV}}" } ],
+        "Type": "ipsec.1"
+      }
+    },
+    "vpnCustomerGateway1": {
+      "Type": "AWS::EC2::CustomerGateway",
+      "Properties": {
+        "BgpAsn": { "Ref": "BgpAsnParam" },
+        "IpAddress": { "Ref": "CustomerGatewayAddress1Param" },
+        "Tags": [ { "Key": "Name", "Value": "vpnCustomerGateway1-{{ENV}}" } ],
+        "Type": "ipsec.1"
+      }
+    },
+    "VpnConnection0": {
+      "Type": "AWS::EC2::VPNConnection",
+      "DependsOn": [ "vpnCustomerGateway0", "vpnGateway" ],
+      "Properties": {
+        "Type": "ipsec.1",
+        "CustomerGatewayId": { "Ref": "vpnCustomerGateway0" },
+        "StaticRoutesOnly": "true",
+        "Tags": [ { "Key": "Name", "Value": "vpnConnection0-{{ENV}}" } ],
+        "VpnGatewayId": { "Ref": "vpnGateway" }
+      }
+    },
+    "VpnConnection1": {
+      "Type": "AWS::EC2::VPNConnection",
+      "DependsOn": [ "vpnCustomerGateway1", "vpnGateway" ],
+      "Properties": {
+        "Type": "ipsec.1",
+        "CustomerGatewayId": { "Ref": "vpnCustomerGateway1" },
+        "StaticRoutesOnly": "true",
+        "Tags": [ { "Key": "Name", "Value": "vpnConnection1-{{ENV}}" } ],
+        "VpnGatewayId": { "Ref": "vpnGateway" }
+      }
+    },
+    "vpnConnectionRoute0": {
+      "Type": "AWS::EC2::VPNConnectionRoute",
+      "Properties": {
+        "DestinationCidrBlock": { "Ref": "DestinationCidrVpnConnection0Param" },
+        "VpnConnectionId": { "Ref": "VpnConnection0" }
+      }
+    },
+    "vpnConnectionRoute1": {
+      "Type": "AWS::EC2::VPNConnectionRoute",
+      "Properties": {
+        "DestinationCidrBlock": { "Ref": "DestinationCidrVpnConnection1Param" },
+        "VpnConnectionId": { "Ref": "VpnConnection1" }
+      }
+    },
+    "vpnRoutePropagation": {
+      "Type": "AWS::EC2::VPNGatewayRoutePropagation",
+      "DependsOn": [ "vpnGateway", "vpnToVpcAttachment" ],
+      "Properties": {
+        "RouteTableIds": [ "{{aws:ec2:route-table/main-route-table-id,vpc-{{ENV}}}}" ],
+        "VpnGatewayId": { "Ref": "vpnGateway" }
+      }
+    },
+    "vpnToVpcAttachment": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": "{{aws:ec2:vpc/vpc-id,vpc-{{ENV}}}}",
+        "VpnGatewayId": { "Ref": "vpnGateway" }
+      }
+    }
+  }
+}

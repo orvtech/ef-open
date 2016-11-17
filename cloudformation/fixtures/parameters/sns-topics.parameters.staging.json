@@ -1,0 +1,6 @@
+[
+  {
+    "ParameterKey": "PagerDutyEndPointParam",
+    "ParameterValue": "https://events.pagerduty.com/integration/b45211a50d12475fbc0670dea2a2bcad/enqueue"
+  }
+]

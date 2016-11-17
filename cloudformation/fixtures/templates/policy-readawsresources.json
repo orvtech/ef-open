@@ -1,0 +1,31 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Policy for read access to AWS resources",
+  "Resources": {
+    "UsersManageCredentials": {
+      "Type": "AWS::IAM::Policy",
+      "Properties" : {
+        "PolicyName" : "UsersReadAccessAWSResources",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "sid1",
+            "Effect": "Allow",
+            "Action": [
+              "autoscaling:Describe*",
+              "cloudwatch:ListMetrics",
+              "cloudwatch:GetMetricStatistics",
+              "cloudwatch:Describe*",
+              "elasticloadbalancing:Describe*",
+              "sqs:GetQueueAttributes",
+              "sqs:ListQueues",
+              "sqs:ListDeadLetterSourceQueues"
+            ],
+            "Resource": "*"
+          }]
+        },
+      "Groups": [ "ReadOnlyAWS" ]
+      }
+    }
+  }
+}
